@@ -3,19 +3,17 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from clipboard import copy
-from pathlib import Path
 
 from psiutils.constants import PAD
 from psiutils.errors import ErrorMsg
-from psiutils.buttons import Button, ButtonFrame
+from psiutils.buttons import ButtonFrame
 from psiutils.widgets import WaitCursor
 from psiutils.utilities import window_resize, geometry
 
-import text
-from emails import send_emails, emails_to_file
-from common import Dates
-
-from config import read_config
+from directors_reimbursements.emails import send_emails, emails_to_file
+from directors_reimbursements.common import Dates
+from directors_reimbursements.config import read_config
+from directors_reimbursements import text as txt
 
 
 class ReportFrame():
@@ -24,6 +22,7 @@ class ReportFrame():
                  formatted_report: list,
                  csv_report: list,
                  dates: Dates) -> None:
+        # pylint: disable=no-member)
         self.root = tk.Toplevel(parent.root)
         self.parent = parent
         self.formatted_report = formatted_report
@@ -39,15 +38,15 @@ class ReportFrame():
         self.send_emails.trace_add('write', self._check_button_enable)
         self.emails_to_file.trace_add('write', self._check_button_enable)
 
-        self.show()
+        self._show()
         self._enable_buttons()
 
-    def show(self) -> None:
+    def _show(self) -> None:
         root = self.root
         root.geometry(geometry(self.config, __file__))
-        root.title(f'{text.TITLE} -  Report')
+        root.title(f'{txt.TITLE} -  Report')
 
-        root.bind('<Control-x>', self.dismiss)
+        root.bind('<Control-x>', self._dismiss)
         root.bind('<Control-c>', self._copy)
         root.bind('<Control-e>', self._emails)
         root.bind('<Configure>',
@@ -74,9 +73,9 @@ class ReportFrame():
         frame.rowconfigure(0, weight=1)
         frame.columnconfigure(0, weight=1)
 
-        text = tk.Text(frame, height=20)
-        text.insert('1.0', '\n'.join(self.formatted_report))
-        text.grid(row=0, column=0, sticky=tk.NSEW)
+        text_box = tk.Text(frame, height=20)
+        text_box.insert('1.0', '\n'.join(self.formatted_report))
+        text_box.grid(row=0, column=0, sticky=tk.NSEW)
 
         return frame
 
@@ -99,7 +98,7 @@ class ReportFrame():
         frame.buttons = [
             frame.icon_button('send', False, self._emails),
             frame.icon_button('copy_clipboard', False, self._copy),
-            frame.icon_button('exit', False, self.dismiss),
+            frame.icon_button('exit', False, self._dismiss),
         ]
         frame.enable(False)
         return frame
@@ -130,7 +129,7 @@ class ReportFrame():
     def _copy(self, *args) -> None:
         copy('\n'.join(self.csv_report))
 
-    def _check_button_enable(self, var, index, mode) -> None:
+    def _check_button_enable(self) -> None:
         self._enable_buttons()
 
     def _enable_buttons(self) -> None:
@@ -138,5 +137,5 @@ class ReportFrame():
         if self.send_emails.get() or self.emails_to_file.get():
             self.button_frame.enable(True)
 
-    def dismiss(self, *args):
+    def _dismiss(self, *args):
         self.root.destroy()
