@@ -1,0 +1,2 @@
+{"changes": {"period_start_month": "(old value=1, new_value=2)"}, "event": "Config saved", "timestamp": "2025-08-16T15:55:55.724844Z", "level": "info", "logger": "forms.frm_config"}
+{"changes": {"period_start_month": "(old value=2, new_value=1)"}, "event": "Config saved", "timestamp": "2025-08-16T15:56:04.683913Z", "level": "info", "logger": "forms.frm_config"}
