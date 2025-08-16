@@ -1,28 +1,28 @@
 """Main screen for Phoenix Director's payments."""
 
 import os
+from pathlib import Path
 import tkinter as tk
 from tkinter import ttk, filedialog
 from datetime import datetime
 from dateutil import relativedelta
 from dateutil.parser import parse as date_parse
-from pathlib import Path
 
 from psiutils.constants import PAD, LARGE_FONT
-from psiutils.buttons import Button, ButtonFrame, IconButton
+from psiutils.buttons import ButtonFrame, IconButton
 from psiutils.widgets import clickable_widget, separator_frame
 from psiutils.utilities import window_resize, geometry
 
-from config import read_config
-from constants import MONTH_FORMAT, XLS_FILE_TYPES
-from common import get_period_dates
-from process import calculate
-import text
+from directors_reimbursements.config import read_config
+from directors_reimbursements.constants import MONTH_FORMAT, XLS_FILE_TYPES
+from directors_reimbursements.common import get_period_dates
+from directors_reimbursements.process import calculate
+from directors_reimbursements import text as txt
 
-from forms.frm_report import ReportFrame
-from main_menu import MainMenu
+from directors_reimbursements.forms.frm_report import ReportFrame
+from directors_reimbursements.main_menu import MainMenu
 
-date_delta = relativedelta.relativedelta
+DateDelta = relativedelta.relativedelta
 
 
 class MainFrame():
@@ -41,14 +41,14 @@ class MainFrame():
 
         self.workbook_path.trace_add('write', self.on_workbook_path_change)
 
-        self.show()
+        self._show()
 
-    def show(self) -> None:
+    def _show(self) -> None:
         root = self.root
         root.geometry(geometry(self.config, __file__))
-        root.title(text.TITLE)
+        root.title(txt.TITLE)
 
-        root.bind('<Control-q>', self.dismiss)
+        root.bind('<Control-q>', self._dismiss)
         root.bind('<Control-g>', self._process)
         root.bind('<Configure>',
                   lambda event, arg=None: window_resize(self, __file__))
@@ -59,7 +59,7 @@ class MainFrame():
         root.rowconfigure(1, weight=1)
         root.columnconfigure(0, weight=1)
 
-        header = ttk.Label(root, text=text.TITLE, font=LARGE_FONT)
+        header = ttk.Label(root, text=txt.TITLE, font=LARGE_FONT)
         header.grid(row=0, column=0, columnspan=99, padx=PAD, pady=PAD)
 
         main_frame = self._main_frame(root)
@@ -73,8 +73,8 @@ class MainFrame():
         sizegrip.grid(sticky=tk.SE)
 
     def _main_frame(self, master: tk.Frame) -> ttk.Frame:
+        # pylint: disable=no-member)
         frame = ttk.Frame(master)
-        # frame.rowconfigure(1, weight=1)
         frame.columnconfigure(1, weight=1)
 
         row = 0
@@ -84,7 +84,7 @@ class MainFrame():
 
         row += 1
         prev_button = IconButton(
-            frame, text.PREVIOUS, 'previous', self.previous_period_click,)
+            frame, txt.PREVIOUS, 'previous', self.previous_period_click,)
         prev_button.grid(row=row, column=0, sticky=tk.E)
         clickable_widget(prev_button)
 
@@ -96,7 +96,7 @@ class MainFrame():
                                  command=self.next_period_click)
 
         next_button = IconButton(
-            frame, text.NEXT, 'next', self.next_period_click,)
+            frame, txt.NEXT, 'next', self.next_period_click,)
         next_button.grid(row=row, column=3, sticky=tk.W)
         clickable_widget(next_button)
 
@@ -123,7 +123,7 @@ class MainFrame():
         workbook_file_name.grid(row=row, column=1, sticky=tk.EW,
                                 padx=PAD, pady=PAD)
 
-        select = IconButton(frame, text.OPEN, 'open', self.get_workbook_path)
+        select = IconButton(frame, txt.OPEN, 'open', self.get_workbook_path)
         select.grid(row=row, column=3, padx=PAD)
 
         return frame
@@ -132,7 +132,7 @@ class MainFrame():
         frame = ButtonFrame(master, tk.HORIZONTAL)
         frame.buttons = [
             frame.icon_button('build', False, self._process),
-            frame.icon_button('close', False, self.dismiss),
+            frame.icon_button('close', False, self._dismiss),
         ]
         frame.enable(False)
         return frame
@@ -142,23 +142,22 @@ class MainFrame():
 
     def _pay_months(self, *args) -> str:
         payment_month = date_parse(self.payment_month.get())
-        start_month = payment_month - date_delta(months=3)
-        end_month = payment_month - date_delta(months=1)
-        pay_months = (f'Process payments for '
-                      f'{start_month.strftime(MONTH_FORMAT)} to '
-                      f'{end_month.strftime(MONTH_FORMAT)}')
-        return pay_months
+        start_month = payment_month - DateDelta(months=3)
+        end_month = payment_month - DateDelta(months=1)
+        return (f'Process payments for '
+                f'{start_month.strftime(MONTH_FORMAT)} to '
+                f'{end_month.strftime(MONTH_FORMAT)}')
 
     def previous_period_click(self) -> None:
         """Get previous period."""
         payment_date = date_parse(self.payment_month.get())
-        payment_date -= date_delta(months=self.config.period_months)
+        payment_date -= DateDelta(months=self.config.period_months)
         self._update_dates(payment_date)
 
     def next_period_click(self) -> None:
         """Get next period."""
         payment_date = date_parse(self.payment_month.get())
-        payment_date += date_delta(months=self.config.period_months)
+        payment_date += DateDelta(months=self.config.period_months)
         self._update_dates(payment_date)
 
     def _update_dates(self, payment_date: datetime.date) -> None:
@@ -184,6 +183,7 @@ class MainFrame():
         self.set_file_message()
 
     def set_file_message(self) -> None:
+        # pylint: disable=no-member)
         message = ''
         config_text = 'Click on Menu > Defaults to define.'
         email_template = os.path.isfile(self.config.email_template)
@@ -207,7 +207,7 @@ class MainFrame():
             dlg = ReportFrame(
                 self, directors, formatted_report, csv_report, dates)
             self.root.wait_window(dlg.root)
-            self.dismiss()
+            self._dismiss()
 
-    def dismiss(self, *args) -> None:
+    def _dismiss(self, *args) -> None:
         self.root.destroy()

@@ -1,10 +1,12 @@
 """Config for Phoenix Director's payments."""
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 from psiconfig import TomlConfig
-from constants import CONFIG_PATH, DOWNLOADS, USER_DATA_DIR
-from dotenv import load_dotenv
+
+from directors_reimbursements.constants import (
+    CONFIG_PATH, DOWNLOADS, USER_DATA_DIR)
 
 
 DEFAULT_CONFIG = {
@@ -24,18 +26,17 @@ DEFAULT_CONFIG = {
 
 def read_config() -> TomlConfig:
     """Return the config file."""
-    config = TomlConfig(path=CONFIG_PATH, defaults=DEFAULT_CONFIG)
-    config.period_months = int(config.period_months)
+    toml_config = TomlConfig(path=CONFIG_PATH, defaults=DEFAULT_CONFIG)
+    toml_config.period_months = int(config.period_months)
 
-    return config
+    return toml_config
 
 
-def save_config(config: TomlConfig) -> TomlConfig | None:
-    result = config.save()
-    if result != config.STATUS_OK:
+def save_config(toml_config: TomlConfig) -> TomlConfig | None:
+    result = toml_config.save()
+    if result != toml_config.STATUS_OK:
         return None
-    config = TomlConfig(CONFIG_PATH)
-    return config
+    return TomlConfig(CONFIG_PATH)
 
 
 def _get_env() -> dict:
