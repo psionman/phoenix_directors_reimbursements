@@ -1,7 +1,8 @@
-from forms.frm_config import ConfigFrame
+from directors_reimbursements.forms.frm_config import ConfigFrame
 
 
 class ModuleCaller():
+    """Call a module  from command line."""
     def __init__(self, root, module) -> None:
         modules = {
             'config': self._config,

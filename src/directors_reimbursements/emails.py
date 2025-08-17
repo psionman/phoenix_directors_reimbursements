@@ -17,6 +17,7 @@ from directors_reimbursements.config import read_config, env
 def send_emails(start_date: datetime,
                 directors: dict[Director]) -> int | ErrorMsg:
     """Send Emails for the directors."""
+    # pylint: disable=no-member)
     config = read_config()
     template = _email_template(config.email_template)
     if isinstance(template, ErrorMsg):
@@ -25,7 +26,6 @@ def send_emails(start_date: datetime,
     emails_sent = 0
     for key, director in directors.items():
         if key and director.dollars > 0:
-            print(director.email)
             response = _create_email(
                 template, director, start_date, config.email_subject)
             if isinstance(response, ErrorMsg):
@@ -138,20 +138,18 @@ def _email_as_text(
         email_subject: str,
         ) -> str:
     body = _email_body(base_content, director, start_date)
-    output = (f'{director.email}\n'
-              f'{email_subject}\n\n'
-              f'{body}\n'
-              f'{"-"*50}\n\n')
-    return output
+    return (f'{director.email}\n'
+            f'{email_subject}\n\n'
+            f'{body}\n'
+            f'{"-"*50}\n\n')
 
 
 def _save_emails(email_file: Path, output: str) -> None:
     try:
         email_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(email_file, 'w') as f_email:
+        with open(email_file, 'w', encoding='utf-8') as f_email:
             f_email.write(output)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
+    except NotADirectoryError:
+        logger.warning(f'Cannot find directory: {Path(email_file).parent}')
         return False
     return True
