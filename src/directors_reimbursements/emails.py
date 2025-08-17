@@ -7,10 +7,11 @@ from smtplib import SMTPAuthenticationError
 import smtplib
 
 from psiutils.errors import ErrorMsg
+from psiutils.utilities import logger
 
-from constants import USER_DATA_DIR, DATE_FORMAT
-from process import Director
-from config import read_config, env
+from directors_reimbursements.constants import USER_DATA_DIR, DATE_FORMAT
+from directors_reimbursements.process import Director
+from directors_reimbursements.config import read_config, env
 
 
 def send_emails(start_date: datetime,
@@ -46,10 +47,10 @@ def _email_template(email_template_path: str) -> str | ErrorMsg:
 
 def _get_email_template(email_template: Path) -> str:
     try:
-        with open(email_template, 'r') as f_email_text:
-            template = f_email_text.read()
-            return template
-    except FileNotFoundError:
+        with open(email_template, 'r', encoding='utf-8') as f_email_text:
+            return f_email_text.read()
+    except (FileNotFoundError, NotADirectoryError):
+        logger.error(f"Email template not found at {email_template}")
         return ''
 
 
@@ -66,11 +67,13 @@ def _create_email(
             body,
             director.email,)
     except SMTPAuthenticationError:
+        logger.error('Email authentication error.')
         return ErrorMsg(
             header='Email error',
             message='Email authentication error.',
         )
     except TypeError:
+        logger.error('Email setup error.')
         return ErrorMsg(
             header='Email error',
             message='Email setup error.',
@@ -85,8 +88,7 @@ def _email_body(base_content: str, director: Director,
     content = content.replace('<dollars>', str(director.dollars))
     content = content.replace(
         '<period>', start_date.strftime(DATE_FORMAT))
-    content = content.replace('<dates>', ', '.join(director.dates))
-    return content
+    return content.replace('<dates>', ', '.join(director.dates))
 
 
 def _send_email(subject, body, recipient):
@@ -98,22 +100,23 @@ def _send_email(subject, body, recipient):
     with smtplib.SMTP_SSL(env['smtp_server'], env['smtp_port']) as smtp_server:
         smtp_server.login(env['email_sender'], env['email_key'])
         smtp_server.sendmail(env['email_sender'], recipient, msg.as_string())
+    logger.info(f"Email sent to {recipient}")
 
 
 def emails_to_file(
         start_date: datetime, directors: dict[Director]) -> int | ErrorMsg:
     """Send Emails for the directors to file."""
+    # pylint: disable=no-member)
     config = read_config()
     template = _email_template(config.email_template)
     if isinstance(template, ErrorMsg):
         return template
 
-    output = ''
-    for key, director in directors.items():
-        if key and director.dollars > 0:
-            output += _email_as_text(
-                template, director, start_date, config.email_subject)
-
+    output = ''.join(
+        _email_as_text(template, director, start_date, config.email_subject)
+        for key, director in directors.items()
+        if key and director.dollars > 0
+    )
     date_str = datetime.now().strftime("%Y%m%d")
     email_file = Path(
         USER_DATA_DIR,

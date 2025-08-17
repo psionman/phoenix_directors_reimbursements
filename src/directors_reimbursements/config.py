@@ -27,7 +27,7 @@ DEFAULT_CONFIG = {
 def read_config() -> TomlConfig:
     """Return the config file."""
     toml_config = TomlConfig(path=CONFIG_PATH, defaults=DEFAULT_CONFIG)
-    toml_config.period_months = int(config.period_months)
+    toml_config.period_months = int(toml_config.period_months)
 
     return toml_config
 

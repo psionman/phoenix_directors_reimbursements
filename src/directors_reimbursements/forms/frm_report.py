@@ -8,7 +8,7 @@ from psiutils.constants import PAD
 from psiutils.errors import ErrorMsg
 from psiutils.buttons import ButtonFrame
 from psiutils.widgets import WaitCursor
-from psiutils.utilities import window_resize, geometry
+from psiutils.utilities import window_resize, geometry, logger
 
 from directors_reimbursements.emails import send_emails, emails_to_file
 from directors_reimbursements.common import Dates
@@ -113,8 +113,6 @@ class ReportFrame():
                     response.show_message(self.root)
                     self.root.config(cursor='')
                     return
-                # messagebox .showinfo(
-                #     'Emails', 'Emails saved to file.', parent=self.root)
 
             if self.send_emails.get():
                 response = send_emails(self.dates.start_date, self.directors)
@@ -127,6 +125,7 @@ class ReportFrame():
             self.root.config(cursor='')
 
     def _copy(self, *args) -> None:
+        logger.info("Copied csv report to clipboard")
         copy('\n'.join(self.csv_report))
 
     def _check_button_enable(self) -> None:

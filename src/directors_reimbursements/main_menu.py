@@ -4,12 +4,12 @@ from tkinter import messagebox
 from psiutils.menus import Menu, MenuItem
 from psiutils.widgets import About
 
-from config import config
-from constants import AUTHOR, APP_TITLE, USER_DATA_DIR
-import text
-from _version import __version__
+from directors_reimbursements.config import config
+from directors_reimbursements.constants import AUTHOR, APP_TITLE, USER_DATA_DIR
+from directors_reimbursements._version import __version__
+from directors_reimbursements import text as txt
 
-from forms.frm_config import ConfigFrame
+from directors_reimbursements.forms.frm_config import ConfigFrame
 
 SPACES = ' '*20
 
@@ -34,11 +34,11 @@ class MainMenu():
 
     def _file_menu_items(self) -> list:
         return [
-            # MenuItem(f'{CLUB_TEXT}{text.ELLIPSIS}', self._show_clubs_frame),
-            # MenuItem(f'{COPY_PLAYERS_TEXT}{text.ELLIPSIS}',
+            # MenuItem(f'{CLUB_TEXT}{txt.ELLIPSIS}', self._show_clubs_frame),
+            # MenuItem(f'{COPY_PLAYERS_TEXT}{txt.ELLIPSIS}',
             #          self._show_copy_players),
-            MenuItem(f'{text.CONFIG}{text.ELLIPSIS}', self._show_config_frame),
-            MenuItem(text.EXIT, self.dismiss),
+            MenuItem(f'{txt.CONFIG}{txt.ELLIPSIS}', self._show_config_frame),
+            MenuItem(txt.EXIT, self.dismiss),
         ]
 
     def _show_config_frame(self):
@@ -48,11 +48,11 @@ class MainMenu():
 
     def _help_menu_items(self) -> list:
         return [
-            MenuItem(f'On line help{text.ELLIPSIS}', self._show_help),
-            MenuItem(f'Data directory location{text.ELLIPSIS}',
+            MenuItem(f'On line help{txt.ELLIPSIS}', self._show_help),
+            MenuItem(f'Data directory location{txt.ELLIPSIS}',
                      self._show_data_directory),
-            MenuItem(f'About{text.ELLIPSIS}', self._show_about),
-            # MenuItem(f'About frame{text.ELLIPSIS}', self._show_about_frame),
+            MenuItem(f'About{txt.ELLIPSIS}', self._show_about),
+            # MenuItem(f'About frame{txt.ELLIPSIS}', self._show_about_frame),
         ]
 
     def _show_help(self):

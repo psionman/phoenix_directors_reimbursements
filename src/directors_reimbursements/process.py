@@ -3,15 +3,16 @@
 import os
 from pathlib import Path
 from datetime import datetime
-
-from common import Dates
-from config import config
 from openpyxl import load_workbook
 
-from constants import (
+from psiutils.utilities import logger
+
+from directors_reimbursements.common import Dates
+from directors_reimbursements.config import config
+
+from directors_reimbursements.constants import (
     SHEET_NAME, INITIALS_COL, NAME_COL, EMAIL_COL, USERNAME_COL, MON_DATE_COL,
     WED_DATE_COL, ACTIVE_COL, DATE_FORMAT)
-
 
 HEADING = ('Name', 'username', 'BBO$', 'Dates directed', 'Total dollars')
 
@@ -32,6 +33,7 @@ class Director():
 
     @property
     def dollars(self):
+        # pylint: disable=no-member)
         return len(self.dates) * config.payment_bbo
 
     def _get_first_name(self):
@@ -39,23 +41,26 @@ class Director():
 
 
 def calculate(dates: Dates) -> None:
+    # pylint: disable=no-member)
+    date_from = dates.start_date.strftime('%d %b %Y')
+    date_to = dates.end_date.strftime('%d %b %Y')
+    logger.info(f'Calculation started for {date_from} to {date_to}')
     workbook_path = Path(os.path.expanduser('~'), config.workbook_path)
     workbook = load_workbook(filename=workbook_path, data_only=True)
 
     directors = _get_directors(workbook)
     _get_dates_directed(dates, workbook, directors)
     csv_report = _create_csv_report(directors)
-    formatted_report =_create_formatted_report(directors)
+    formatted_report = _create_formatted_report(directors)
 
     return (directors, formatted_report, csv_report)
 
 
 def _create_formatted_report(directors: dict[str, Director]) -> list[str]:
-    report = []
     (name, username, bbo_dollars, dates, total) = HEADING
     total_dollars = 0
 
-    report.append(f'{name:<20} {username:<10} {bbo_dollars:>4} {dates}')
+    report = [(f'{name:<20} {username:<10} {bbo_dollars:>4} {dates}')]
     for director in directors.values():
         if director.active and director.dollars:
             report.append(
@@ -65,15 +70,15 @@ def _create_formatted_report(directors: dict[str, Director]) -> list[str]:
                  )
             total_dollars += director.dollars
     report.append(f'{total:<20} {"":<10} {total_dollars:>4}')
+    logger.info("Created formatted report")
     return report
 
 
 def _create_csv_report(directors: dict[str, Director]) -> list[str]:
-    report = []
     (name, username, bbo_dollars, dates, total) = HEADING
     total_dollars = 0
 
-    report.append(f'{name},{username},{bbo_dollars},{dates}')
+    report = [(f'{name},{username},{bbo_dollars},{dates}')]
     for director in directors.values():
         if director.active and director.dollars:
             report.append(
@@ -82,12 +87,15 @@ def _create_csv_report(directors: dict[str, Director]) -> list[str]:
                  f'{", ".join(director.dates)}')
                  )
             total_dollars += director.dollars
-    report.append(f'{total}, {""}, {total_dollars}')
+    report.append(f'{total}, , {total_dollars}')
+
+    logger.info("Created csv report")
     return report
 
 
 def _get_dates_directed(
-        dates: Dates, workbook: object,
+        dates: Dates,
+        workbook: object,
         directors: dict[str, Director]) -> dict[str: str]:
     """Return a dict of directors and the dates they've directed."""
     worksheet = workbook[SHEET_NAME]
@@ -109,6 +117,8 @@ def _get_dates_directed(
                         directed[row[dir_col]] = []
                     directed[row[dir_col]].append(
                         row[date_col].strftime(DATE_FORMAT))
+
+    logger.info(f"Retrieved {len(directed)} directed date records")
     return directed
 
 
@@ -125,8 +135,5 @@ def _get_directors(workbook: object) -> dict[str, Director]:
                                 dates=[],
                                 active=row[ACTIVE_COL] is not None)
             directors[director.initials] = director
+    logger.info(f"Retrieved {len(directors)} directors' records")
     return directors
-
-
-if __name__ == '__main__':
-    calculate()

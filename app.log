@@ -1,2 +1,44 @@
 {"changes": {"period_start_month": "(old value=1, new_value=2)"}, "event": "Config saved", "timestamp": "2025-08-16T15:55:55.724844Z", "level": "info", "logger": "forms.frm_config"}
 {"changes": {"period_start_month": "(old value=2, new_value=1)"}, "event": "Config saved", "timestamp": "2025-08-16T15:56:04.683913Z", "level": "info", "logger": "forms.frm_config"}
+{"event": "Calculation started for  to ", "timestamp": "2025-08-17T08:51:55.193452Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Calculation started for 2025-04-01 00:00:00 to 2025-06-30 00:00:00", "timestamp": "2025-08-17T08:53:50.242594Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Calculation started for 01 Apr 2025 to 2025-06-30 00:00:00", "timestamp": "2025-08-17T08:55:03.814055Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Calculation started for 01 Apr 2025 to 30 Jun 2025", "timestamp": "2025-08-17T08:55:20.711614Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Calculation started for 01 Apr 2025 to 30 Jun 2025", "timestamp": "2025-08-17T08:57:52.582350Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 10 directors' records", "timestamp": "2025-08-17T08:57:52.839261Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Calculation started for 01 Apr 2025 to 30 Jun 2025", "timestamp": "2025-08-17T08:59:13.052399Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 10 directors' records", "timestamp": "2025-08-17T08:59:13.288531Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 7 directed date records", "timestamp": "2025-08-17T08:59:13.304056Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Calculation started for 01 Apr 2025 to 30 Jun 2025", "timestamp": "2025-08-17T09:00:42.955683Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 10 directors' records", "timestamp": "2025-08-17T09:00:43.196542Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 7 directed date records", "timestamp": "2025-08-17T09:00:43.212051Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Created csv report", "timestamp": "2025-08-17T09:00:43.212237Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Created formatted report", "timestamp": "2025-08-17T09:00:43.212322Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Calculation started for 01 Apr 2025 to 30 Jun 2025", "timestamp": "2025-08-17T09:07:25.785641Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 10 directors' records", "timestamp": "2025-08-17T09:07:26.023942Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 7 directed date records", "timestamp": "2025-08-17T09:07:26.039644Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Created csv report", "timestamp": "2025-08-17T09:07:26.039807Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Created formatted report", "timestamp": "2025-08-17T09:07:26.039889Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Calculation started for 01 Apr 2025 to 30 Jun 2025", "timestamp": "2025-08-17T09:07:52.791694Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 10 directors' records", "timestamp": "2025-08-17T09:07:53.057602Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 7 directed date records", "timestamp": "2025-08-17T09:07:53.073732Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Created csv report", "timestamp": "2025-08-17T09:07:53.073949Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Created formatted report", "timestamp": "2025-08-17T09:07:53.074036Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Calculation started for 01 Apr 2025 to 30 Jun 2025", "timestamp": "2025-08-17T09:09:07.522235Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 10 directors' records", "timestamp": "2025-08-17T09:09:07.759874Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 7 directed date records", "timestamp": "2025-08-17T09:09:07.775723Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Created csv report", "timestamp": "2025-08-17T09:09:07.775907Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Created formatted report", "timestamp": "2025-08-17T09:09:07.775992Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Email template not found at /home/jeff/.local/share/phoenix_directors_reimbursements/reimbursement_email_template.txt/t", "timestamp": "2025-08-17T09:09:09.568739Z", "level": "error", "logger": "directors_reimbursements.process"}
+{"event": "Calculation started for 01 Apr 2025 to 30 Jun 2025", "timestamp": "2025-08-17T09:14:00.324116Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 10 directors' records", "timestamp": "2025-08-17T09:14:00.559185Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Retrieved 7 directed date records", "timestamp": "2025-08-17T09:14:00.575189Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Created csv report", "timestamp": "2025-08-17T09:14:00.575365Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Created formatted report", "timestamp": "2025-08-17T09:14:00.575454Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Email sent to jeffwatkins2000@gmail.com", "timestamp": "2025-08-17T09:14:04.964358Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Email sent to jeffwatkins2000@gmail.com", "timestamp": "2025-08-17T09:14:06.094373Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Email sent to jeffwatkins2000@gmail.com", "timestamp": "2025-08-17T09:14:07.322592Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Email sent to jeffwatkins2000@gmail.com", "timestamp": "2025-08-17T09:14:08.460063Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Email sent to jeffwatkins2000@gmail.com", "timestamp": "2025-08-17T09:14:09.663450Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Email sent to jeffwatkins2000@gmail.com", "timestamp": "2025-08-17T09:14:10.903518Z", "level": "info", "logger": "directors_reimbursements.process"}
+{"event": "Email sent to jeffwatkins2000@gmail.com", "timestamp": "2025-08-17T09:14:12.084868Z", "level": "info", "logger": "directors_reimbursements.process"}
