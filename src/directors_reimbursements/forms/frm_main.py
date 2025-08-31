@@ -84,7 +84,7 @@ class MainFrame():
 
         row += 1
         prev_button = IconButton(
-            frame, txt.PREVIOUS, 'previous', self.previous_period_click,)
+            frame, txt.PREVIOUS, 'previous', False, self.previous_period_click,)
         prev_button.grid(row=row, column=0, sticky=tk.E)
         clickable_widget(prev_button)
 
@@ -96,7 +96,7 @@ class MainFrame():
                                  command=self.next_period_click)
 
         next_button = IconButton(
-            frame, txt.NEXT, 'next', self.next_period_click,)
+            frame, txt.NEXT, 'next', False, self.next_period_click,)
         next_button.grid(row=row, column=3, sticky=tk.W)
         clickable_widget(next_button)
 
@@ -123,7 +123,8 @@ class MainFrame():
         workbook_file_name.grid(row=row, column=1, sticky=tk.EW,
                                 padx=PAD, pady=PAD)
 
-        select = IconButton(frame, txt.OPEN, 'open', self.get_workbook_path)
+        select = IconButton(
+            frame, txt.OPEN, 'open', False, self.get_workbook_path)
         select.grid(row=row, column=3, padx=PAD)
 
         return frame
