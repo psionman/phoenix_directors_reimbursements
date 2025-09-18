@@ -7,9 +7,11 @@ from psiutils.widgets import About
 from directors_reimbursements.config import config
 from directors_reimbursements.constants import AUTHOR, APP_TITLE, USER_DATA_DIR
 from directors_reimbursements._version import __version__
-from directors_reimbursements import text as txt
+from directors_reimbursements.text import Text
 
 from directors_reimbursements.forms.frm_config import ConfigFrame
+
+txt = Text()
 
 SPACES = ' '*20
 
@@ -33,10 +35,8 @@ class MainMenu():
         menubar.add_cascade(menu=help_menu, label='Help')
 
     def _file_menu_items(self) -> list:
+        # pylint: disable=no-member)
         return [
-            # MenuItem(f'{CLUB_TEXT}{txt.ELLIPSIS}', self._show_clubs_frame),
-            # MenuItem(f'{COPY_PLAYERS_TEXT}{txt.ELLIPSIS}',
-            #          self._show_copy_players),
             MenuItem(f'{txt.CONFIG}{txt.ELLIPSIS}', self._show_config_frame),
             MenuItem(txt.EXIT, self.dismiss),
         ]
@@ -47,6 +47,7 @@ class MainMenu():
         self.root.wait_window(dlg.root)
 
     def _help_menu_items(self) -> list:
+        # pylint: disable=no-member)
         return [
             MenuItem(f'On line help{txt.ELLIPSIS}', self._show_help),
             MenuItem(f'Data directory location{txt.ELLIPSIS}',
@@ -60,8 +61,9 @@ class MainMenu():
         ...
 
     def _show_data_directory(self):
-        dir = f'Data directory: {config.data_directory} {SPACES}'
-        messagebox.showinfo(title='Data directory', message=dir)
+        # pylint: disable=no-member)
+        msg = f'Data directory: {config.data_directory} {SPACES}'
+        messagebox.showinfo(title='Data directory', message=msg)
 
     def _show_about(self):
         about_text = {

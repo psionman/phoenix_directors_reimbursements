@@ -10,8 +10,10 @@ from psiutils.utilities import window_resize, geometry
 
 from directors_reimbursements.constants import TXT_FILE_TYPES, XLS_FILE_TYPES
 from directors_reimbursements.config import read_config
-from directors_reimbursements import text as txt
+from directors_reimbursements.text import Text
 from directors_reimbursements import logger
+
+txt = Text()
 
 FIELDS = {
     "send_emails": tk.BooleanVar,

@@ -17,11 +17,12 @@ from directors_reimbursements.config import read_config
 from directors_reimbursements.constants import MONTH_FORMAT, XLS_FILE_TYPES
 from directors_reimbursements.common import get_period_dates
 from directors_reimbursements.process import calculate
-from directors_reimbursements import text as txt
+from directors_reimbursements.text import Text
 
 from directors_reimbursements.forms.frm_report import ReportFrame
 from directors_reimbursements.main_menu import MainMenu
 
+txt = Text()
 DateDelta = relativedelta.relativedelta
 
 
