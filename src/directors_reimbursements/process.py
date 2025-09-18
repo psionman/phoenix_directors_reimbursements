@@ -5,10 +5,9 @@ from pathlib import Path
 from datetime import datetime
 from openpyxl import load_workbook
 
-from psiutils.utilities import logger
-
 from directors_reimbursements.common import Dates
 from directors_reimbursements.config import config
+from directors_reimbursements import logger
 
 from directors_reimbursements.constants import (
     SHEET_NAME, INITIALS_COL, NAME_COL, EMAIL_COL, USERNAME_COL, MON_DATE_COL,

@@ -8,12 +8,13 @@ from psiutils.constants import PAD
 from psiutils.errors import ErrorMsg
 from psiutils.buttons import ButtonFrame
 from psiutils.widgets import WaitCursor
-from psiutils.utilities import window_resize, geometry, logger
+from psiutils.utilities import window_resize, geometry
 
 from directors_reimbursements.emails import send_emails, emails_to_file
 from directors_reimbursements.common import Dates
 from directors_reimbursements.config import read_config
 from directors_reimbursements import text as txt
+from directors_reimbursements import logger
 
 
 class ReportFrame():

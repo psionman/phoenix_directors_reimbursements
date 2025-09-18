@@ -7,11 +7,10 @@ from smtplib import SMTPAuthenticationError
 import smtplib
 
 from psiutils.errors import ErrorMsg
-from psiutils.utilities import logger
-
 from directors_reimbursements.constants import USER_DATA_DIR, DATE_FORMAT
 from directors_reimbursements.process import Director
 from directors_reimbursements.config import read_config, env
+from directors_reimbursements import logger
 
 
 def send_emails(start_date: datetime,
