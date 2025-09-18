@@ -119,7 +119,7 @@ class ConfigFrame():
                                 sticky=tk.EW, padx=PAD, pady=PAD)
         self.workbook_path.trace_add('write', self.on_workbook_path_change)
 
-        select = IconButton(frame, txt.OPEN, 'open', False, self._set_workbook_path)
+        select = IconButton(frame, txt.OPEN, 'open', self._set_workbook_path)
         select.grid(row=workbook_row+1, column=2)
         clickable_widget(select)
 
@@ -180,7 +180,7 @@ class ConfigFrame():
         entry.grid(row=file_row+1, column=1, sticky=tk.EW)
 
         button = IconButton(
-            frame, txt.OPEN, 'open', False, self._get_data_directory)
+            frame, txt.OPEN, 'open', self._get_data_directory)
         button.grid(row=file_row+1, column=2, padx=PAD)
 
         label = ttk.Label(frame, text='Email template')
@@ -190,7 +190,7 @@ class ConfigFrame():
         entry.grid(row=file_row+2, column=1, sticky=tk.EW)
 
         button = IconButton(
-            frame, txt.OPEN, 'open', False, self._get_email_template)
+            frame, txt.OPEN, 'open', self._get_email_template)
         button.grid(row=file_row+2, column=2, padx=PAD, pady=PAD)
 
         check_button = tk.Checkbutton(frame, text='Send emails',
@@ -206,8 +206,8 @@ class ConfigFrame():
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
         frame.buttons = [
-            frame.icon_button('save', True, self._save_config),
-            frame.icon_button('exit', False, self._dismiss),
+            frame.icon_button('save', self._save_config, True),
+            frame.icon_button('exit', self._dismiss),
         ]
         frame.enable(False)
         return frame

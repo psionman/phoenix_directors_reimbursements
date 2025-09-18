@@ -97,9 +97,9 @@ class ReportFrame():
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
         frame.buttons = [
-            frame.icon_button('send', False, self._emails),
-            frame.icon_button('copy_clipboard', False, self._copy),
-            frame.icon_button('exit', False, self._dismiss),
+            frame.icon_button('send', self._emails),
+            frame.icon_button('copy_clipboard', self._copy),
+            frame.icon_button('exit', self._dismiss),
         ]
         frame.enable(False)
         return frame
