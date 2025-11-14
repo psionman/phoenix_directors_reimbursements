@@ -10,3 +10,4 @@ app.log
 
 # Virtual environments
 .venv
+.gitA/

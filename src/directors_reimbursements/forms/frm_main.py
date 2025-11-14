@@ -3,7 +3,7 @@
 import os
 from pathlib import Path
 import tkinter as tk
-from tkinter import ttk, filedialog
+from tkinter import ttk, filedialog, messagebox
 from datetime import datetime
 from dateutil import relativedelta
 from dateutil.parser import parse as date_parse
@@ -125,15 +125,18 @@ class MainFrame():
                                 padx=PAD, pady=PAD)
 
         select = IconButton(
-            frame, txt.OPEN, 'open', self.get_workbook_path)
+            frame, txt.OPEN, 'open', self._get_workbook_path)
         select.grid(row=row, column=3, padx=PAD)
 
         return frame
 
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
+        delete = IconButton(
+            frame, 'Delete workbook', 'delete', self._delete_workbook)
         frame.buttons = [
             frame.icon_button('build', self._process),
+            delete,
             frame.icon_button('close', self._dismiss),
         ]
         frame.enable(False)
@@ -168,7 +171,7 @@ class MainFrame():
         self.payment_month.set(payment_month)
         self.pay_months.set(self._pay_months())
 
-    def get_workbook_path(self) -> None:
+    def _get_workbook_path(self) -> None:
         """Set the workbook path"""
         workbook_path = filedialog.askopenfilename(
             title='Workbook',
@@ -201,15 +204,27 @@ class MainFrame():
             self.button_frame.enable(False)
 
     def _process(self, *args) -> None:
+        if not Path(self.workbook_path.get()).is_file():
+            messagebox.showwarning(
+                '', f'No workbook: {Path(self.workbook_path.get()).name}')
+            return
         payment_date = date_parse(self.payment_month.get())
         dates = get_period_dates(payment_date)
 
-        (directors, formatted_report, csv_report) = calculate(dates)
+        (directors, formatted_report, csv_report, output) = calculate(dates)
         if formatted_report:
             dlg = ReportFrame(
-                self, directors, formatted_report, csv_report, dates)
+                self, directors, formatted_report, csv_report, dates, output)
             self.root.wait_window(dlg.root)
             self._dismiss()
+
+    def _delete_workbook(self, *args) -> None:
+        path = Path(self.workbook_path.get())
+        if path.exists():
+            path.unlink()
+            print(f"Deleted {path}")
+        else:
+            print(f"File {path} does not exist")
 
     def _dismiss(self, *args) -> None:
         self.root.destroy()

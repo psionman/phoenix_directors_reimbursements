@@ -4,7 +4,7 @@ version = "0.0.1"
 description = "Create director's reimbursements for Phoenix Bridge Club"
 authors = [{name = "Jeff", "email" = "<jeffwatkins2000@gmail.com>"}]
 readme = "README.md"
-requires-python = '>=3.13'
+requires-python = '>=3.10,<3.13'
 
 include = [
     "HISTORY.md",
@@ -20,24 +20,27 @@ dependencies = [
     "et-xmlfile>=2.0.0",
     "executing>=2.2.0",
     "icecream>=2.1.5",
-    "iniconfig>=2.1.0",
-    "markdown>=3.8.2",
+    "iniconfig>=2.3.0",
+    "markdown>=3.9",
     "openpyxl>=3.1.5",
     "packaging>=25.0",
-    "pillow>=11.3.0",
+    "pillow>=12.0.0",
     "pluggy>=1.6.0",
-    "psi-toml>=0.0.12",
-    "psiutils>=0.2.10",
-    "psiutils>=0.1.67",
+    "psi-toml>=0.0.21",
+    "psiutils>=0.2.13",
     "pygments>=2.19.2",
     "pyperclip>=1.9.0",
     "python-dateutil>=2.9.0.post0",
     "python-dotenv>=1.1.1",
     "six>=1.17.0",
     "structlog>=25.4.0",
-    "tkinterweb>=4.4.4",
-    "tkinterweb-tkhtml>=1.1.1",
+    "tkinterweb>=4.7.0",
+    "tkinterweb-tkhtml>=2.0.0",
     "pygobject>=3.54.2",
+    "psiconfig>=0.0.16",
+    "pycairo>=1.28.0",
+    "tomli>=2.3.0",
+    "tomli-w>=1.2.0",
 ]
 
 [dependency-groups]

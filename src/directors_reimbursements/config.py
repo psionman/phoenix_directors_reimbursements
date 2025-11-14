@@ -4,6 +4,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from psiconfig import TomlConfig
+from psiutils.known_paths import get_downloads_dir
 
 from directors_reimbursements.constants import (
     CONFIG_PATH, DOWNLOADS, USER_DATA_DIR)
@@ -20,7 +21,9 @@ DEFAULT_CONFIG = {
     'payment_bbo':  3,
     'period_months':  3,
     'workbook_path': Path(DOWNLOADS, 'directors-rota.xlsx'),
-    'geometry': {}
+    'geometry': {},
+    'workbook_dir': Path(get_downloads_dir()),
+    'workbook_file_name': 'directors-rota.xlsx',
 }
 
 

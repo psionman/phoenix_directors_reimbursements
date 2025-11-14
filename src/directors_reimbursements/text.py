@@ -15,6 +15,7 @@ from psiutils.text import Text as PsiText
 strings = {
     'DIRECTORS': 'Director\'s',
     'TITLE': 'Director\'s Reimbursements',
+    'OUTPUT': 'Output',
 }
 
 

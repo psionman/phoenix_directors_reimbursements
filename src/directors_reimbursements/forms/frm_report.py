@@ -6,7 +6,7 @@ from clipboard import copy
 
 from psiutils.constants import PAD
 from psiutils.errors import ErrorMsg
-from psiutils.buttons import ButtonFrame
+from psiutils.buttons import ButtonFrame, IconButton
 from psiutils.widgets import WaitCursor
 from psiutils.utilities import window_resize, geometry
 
@@ -16,7 +16,9 @@ from directors_reimbursements.config import read_config
 from directors_reimbursements.text import Text
 from directors_reimbursements import logger
 
-txt = Text(1)
+from directors_reimbursements.forms.frm_output import OutputFrame
+
+txt = Text()
 
 
 class ReportFrame():
@@ -24,7 +26,8 @@ class ReportFrame():
                  directors: dict,
                  formatted_report: list,
                  csv_report: list,
-                 dates: Dates) -> None:
+                 dates: Dates,
+                 output: list) -> None:
         # pylint: disable=no-member)
         self.root = tk.Toplevel(parent.root)
         self.parent = parent
@@ -32,6 +35,7 @@ class ReportFrame():
         self.csv_report = csv_report
         self.directors = directors
         self.dates = dates
+        self.output = output
         self.config = read_config()
 
         # tk Variables
@@ -55,7 +59,7 @@ class ReportFrame():
         root.bind('<Configure>',
                   lambda event, arg=None: window_resize(self, __file__))
 
-        root.rowconfigure(1, weight=1)
+        root.rowconfigure(0, weight=1)
         root.columnconfigure(0, weight=1)
 
         main_frame = self._main_frame(root)
@@ -76,7 +80,7 @@ class ReportFrame():
         frame.rowconfigure(0, weight=1)
         frame.columnconfigure(0, weight=1)
 
-        text_box = tk.Text(frame, height=20)
+        text_box = tk.Text(frame)
         text_box.insert('1.0', '\n'.join(self.formatted_report))
         text_box.grid(row=0, column=0, sticky=tk.NSEW)
 
@@ -98,9 +102,11 @@ class ReportFrame():
 
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
+        output_button = IconButton(frame, txt.OUTPUT, 'report', self._output)
         frame.buttons = [
             frame.icon_button('send', self._emails),
             frame.icon_button('copy_clipboard', self._copy),
+            output_button,
             frame.icon_button('exit', self._dismiss),
         ]
         frame.enable(False)
@@ -138,6 +144,11 @@ class ReportFrame():
         self.button_frame.enable(False)
         if self.send_emails.get() or self.emails_to_file.get():
             self.button_frame.enable(True)
+
+    def _output(self, *args) -> None:
+        dlg = OutputFrame(self)
+        self.root.wait_window(dlg.root)
+        self._dismiss()
 
     def _dismiss(self, *args):
         self.root.destroy()

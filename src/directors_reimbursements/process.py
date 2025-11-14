@@ -51,8 +51,9 @@ def calculate(dates: Dates) -> None:
     _get_dates_directed(dates, workbook, directors)
     csv_report = _create_csv_report(directors)
     formatted_report = _create_formatted_report(directors)
+    output = _create_output(directors)
 
-    return (directors, formatted_report, csv_report)
+    return (directors, formatted_report, csv_report, output)
 
 
 def _create_formatted_report(directors: dict[str, Director]) -> list[str]:
@@ -90,6 +91,14 @@ def _create_csv_report(directors: dict[str, Director]) -> list[str]:
 
     logger.info("Created csv report")
     return report
+
+
+def _create_output(directors: dict[str, Director]) -> list[str]:
+    output = [(director.username, director.dollars)
+              for director in directors.values() if director.dollars]
+    output.sort(key=lambda item: item[0])
+    output.sort(key=lambda item: item[1])
+    return output
 
 
 def _get_dates_directed(

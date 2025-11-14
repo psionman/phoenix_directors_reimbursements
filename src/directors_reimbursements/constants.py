@@ -17,7 +17,7 @@ DOWNLOADS = get_downloads_dir()
 # Application specific
 AUTHOR = 'Jeff Watkins'
 APP_TITLE = "Phoenix Director's Reimbursements"
-ICON_FILE = Path(Path(__file__).parent, 'images/phoenix.png')
+ICON_FILE = Path(Path(__file__).parent, 'images', 'icon.png')
 
 # Files and directories
 WORKBOOK = 'directors-rota.xlsx'
