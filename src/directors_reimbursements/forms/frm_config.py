@@ -42,6 +42,7 @@ class ConfigFrame():
     payment_bbo: tk.DoubleVar
     period_months: tk.IntVar
     workbook_path: tk.StringVar
+
     def __init__(self, parent) -> None:
         # pylint: disable=no-member)
         self.root = tk.Toplevel(parent.root)

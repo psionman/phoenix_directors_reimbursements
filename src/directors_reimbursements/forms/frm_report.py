@@ -148,7 +148,6 @@ class ReportFrame():
     def _output(self, *args) -> None:
         dlg = OutputFrame(self)
         self.root.wait_window(dlg.root)
-        self._dismiss()
 
     def _dismiss(self, *args):
         self.root.destroy()
