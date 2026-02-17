@@ -4,7 +4,7 @@ version = "0.0.1"
 description = "Create director's reimbursements for Phoenix Bridge Club"
 authors = [{name = "Jeff", "email" = "<jeffwatkins2000@gmail.com>"}]
 readme = "README.md"
-requires-python = '>=3.10,<3.13'
+requires-python = '>=3.10'
 
 include = [
     "HISTORY.md",
