@@ -19,6 +19,7 @@ dependencies = [
     "dotenv>=0.9.9",
     "openpyxl>=3.1.5",
     "platformdirs>=4.12.2",
+    "psiconfig",
     "psiutils>=2.0.3",
     "python-dateutil>=2.9.0.post0",
 ]
@@ -40,3 +41,4 @@ select = ["E", "F", "I", "N", "W", "B", "UP"]
 
 [tool.uv.sources]
 psiutils = { path = "../../psi-utilities/psiutils", editable = true }
+psiconfig = { path = "../../psi-utilities/psiconfig", editable = true }

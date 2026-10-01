@@ -4,10 +4,31 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from psiconfig import TomlConfig
+from psiconfig import ConfigField, TomlConfig
 from psiutils.known_paths import get_downloads_dir
 
-from directors_reimbursements.constants import CONFIG_PATH, DOWNLOADS, USER_DATA_DIR
+from directors_reimbursements.constants import (
+    CONFIG_PATH,
+    DOWNLOADS,
+    USER_DATA_DIR,
+)
+
+FIELDS = {
+    "send_emails": ConfigField(bool, True),
+    "emails_to_file": ConfigField(bool, True),
+    "email_file_prefix": ConfigField(str, "emails"),
+    "data_directory": ConfigField(str, USER_DATA_DIR),
+    "email_template": ConfigField(
+        str, Path(USER_DATA_DIR, "reimbursement_email_template.txt")
+    ),
+    "email_subject": ConfigField(
+        str, "Phoenix Bridge Club - Director's playing fees"
+    ),
+    "period_start_month": ConfigField(int, 1),
+    "payment_bbo": ConfigField(float, 3.0),
+    "period_months": ConfigField(int, 3),
+    "workbook_path": ConfigField(str, Path(DOWNLOADS, "directors-rota.xlsx")),
+}
 
 DEFAULT_CONFIG = {
     "send_emails": True,

@@ -51,6 +51,7 @@ dependencies = [
     { name = "dotenv" },
     { name = "openpyxl" },
     { name = "platformdirs" },
+    { name = "psiconfig" },
     { name = "psiutils" },
     { name = "python-dateutil" },
 ]
@@ -66,6 +67,7 @@ requires-dist = [
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "openpyxl", specifier = ">=3.1.5" },
     { name = "platformdirs", specifier = ">=4.12.2" },
+    { name = "psiconfig", editable = "../../psi-utilities/psiconfig" },
     { name = "psiutils", editable = "../../psi-utilities/psiutils" },
     { name = "python-dateutil", specifier = ">=2.9.0.post0" },
 ]
@@ -289,7 +291,7 @@ wheels = [
 [[package]]
 name = "psiconfig"
 version = "0.0.17"
-source = { registry = "https://pypi.org/simple" }
+source = { editable = "../../psi-utilities/psiconfig" }
 dependencies = [
     { name = "iniconfig" },
     { name = "packaging" },
@@ -298,10 +300,19 @@ dependencies = [
     { name = "pygments" },
     { name = "ruff" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d0/39/1229a124e54611379440c39c63789d64d4268cf96080012395afdc366677/psiconfig-0.0.17.tar.gz", hash = "sha256:883a1d995b649717e92acc3a00379f22b1a3d08b7bdb62386a5c8fdf11483d91", size = 3726, upload-time = "2026-09-03T18:12:52.559Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d1/29/d9c51b7c60fc4f584caf17c08639b4f050676c67f50de03f39b6c90ecb7f/psiconfig-0.0.17-py3-none-any.whl", hash = "sha256:a7e1206f0eead6ac7391a01621962d9173d96ffd2f80a2e8df0675c7298146a6", size = 5721, upload-time = "2026-09-03T18:12:51.55Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "iniconfig", specifier = ">=2.1.0" },
+    { name = "packaging", specifier = ">=25.0" },
+    { name = "pluggy", specifier = ">=1.6.0" },
+    { name = "psi-toml", specifier = ">=0.0.21" },
+    { name = "pygments", specifier = ">=2.19.2" },
+    { name = "ruff", specifier = ">=0.15.15" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest" }]
 
 [[package]]
 name = "psiutils"

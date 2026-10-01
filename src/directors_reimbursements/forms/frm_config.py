@@ -3,85 +3,33 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, ttk
 
-from psiutils.buttons import ButtonFrame, IconButton
 from psiutils.constants import PAD
 from psiutils.utilities import window_resize
 from psiutils.widgets import clickable_widget, separator_frame
 
 from directors_reimbursements import logger
-from directors_reimbursements.config import read_config
+from directors_reimbursements.buttons import ButtonFrame, IconButton
+from directors_reimbursements.config import FIELDS, config
 from directors_reimbursements.constants import TXT_FILE_TYPES, XLS_FILE_TYPES
 from directors_reimbursements.state import state
 from directors_reimbursements.text import Text
 
 txt = Text()
 
-FIELDS = {
-    "send_emails": tk.BooleanVar,
-    "emails_to_file": tk.BooleanVar,
-    "email_file_prefix": tk.StringVar,
-    "data_directory": tk.StringVar,
-    "email_template": tk.StringVar,
-    "email_subject": tk.StringVar,
-    "period_start_month": tk.IntVar,
-    "payment_bbo": tk.DoubleVar,
-    "period_months": tk.IntVar,
-    "workbook_path": tk.StringVar,
-}
-
 
 class ConfigFrame:
     """ConfigFrame for Director's reimbursements."""
 
-    send_emails: tk.BooleanVar
-    emails_to_file: tk.BooleanVar
-    email_file_prefix: tk.StringVar
-    data_directory: tk.StringVar
-    email_template: tk.StringVar
-    email_subject: tk.StringVar
-    period_start_month: tk.IntVar
-    payment_bbo: tk.DoubleVar
-    period_months: tk.IntVar
-    workbook_path: tk.StringVar
-
     def __init__(self, parent) -> None:
         self.root = tk.Toplevel(parent.root)
         self.parent = parent
-        config = read_config()
-        self.config = config
 
         # tk variables
-        for field, f_type in FIELDS.items():
-            if f_type is tk.StringVar:
-                setattr(self, field, self._stringvar(getattr(config, field)))
-            elif f_type is tk.IntVar:
-                setattr(self, field, self._intvar(getattr(config, field)))
-            elif f_type is tk.DoubleVar:
-                setattr(self, field, self._doublevar(getattr(config, field)))
-            elif f_type is tk.BooleanVar:
-                setattr(self, field, self._boolvar(getattr(config, field)))
+        # Assign tk variables and check for changes
+        config.assign_tk_variables(self, FIELDS, self._check_value_changed)
+        self.payment_bbo.set(f"{config.payment_bbo:0.2f}")
 
         self._show()
-
-    def _stringvar(self, value: str) -> tk.StringVar:
-        stringvar = tk.StringVar(value=value)
-        stringvar.trace_add("write", self._check_value_changed)
-        return stringvar
-
-    def _intvar(self, value: int) -> tk.IntVar:
-        intvar = tk.IntVar(value=value)
-        intvar.trace_add("write", self._check_value_changed)
-        return intvar
-
-    def _doublevar(self, value: int) -> tk.IntVar:
-        doublevar = tk.DoubleVar(value=value)
-        doublevar.trace_add("write", self._check_value_changed)
-        return doublevar
-
-    def _boolvar(self, value: bool) -> tk.BooleanVar:
-        boolvar = tk.BooleanVar(value=value)
-        boolvar.trace_add("write", self._check_value_changed)
-        return boolvar
 
     def _show(self) -> None:
         root = self.root
@@ -137,7 +85,9 @@ class ConfigFrame:
         )
         self.workbook_path.trace_add("write", self.on_workbook_path_change)
 
-        select = IconButton(frame, txt.OPEN, "open", self._set_workbook_path)
+        select = IconButton(
+            frame, txt.OPEN, "open-folder", self._set_workbook_path
+        )
         select.grid(row=workbook_row + 1, column=2)
         clickable_widget(select)
 
@@ -154,7 +104,9 @@ class ConfigFrame:
         )
 
         label = ttk.Label(frame, text="Period start month")
-        label.grid(row=payment_row + 1, column=0, sticky=tk.E, padx=PAD, pady=PAD)
+        label.grid(
+            row=payment_row + 1, column=0, sticky=tk.E, padx=PAD, pady=PAD
+        )
 
         combobox = ttk.Combobox(
             frame,
@@ -165,7 +117,9 @@ class ConfigFrame:
         clickable_widget(combobox)
 
         label = ttk.Label(frame, text="Session payment ($)")
-        label.grid(row=payment_row + 2, column=0, sticky=tk.E, padx=PAD, pady=PAD)
+        label.grid(
+            row=payment_row + 2, column=0, sticky=tk.E, padx=PAD, pady=PAD
+        )
 
         spinbox = ttk.Spinbox(
             frame,
@@ -179,7 +133,9 @@ class ConfigFrame:
         clickable_widget(spinbox)
 
         label = ttk.Label(frame, text="Period months")
-        label.grid(row=payment_row + 3, column=0, sticky=tk.E, padx=PAD, pady=PAD)
+        label.grid(
+            row=payment_row + 3, column=0, sticky=tk.E, padx=PAD, pady=PAD
+        )
 
         combobox = ttk.Combobox(
             frame,
@@ -193,7 +149,12 @@ class ConfigFrame:
         file_row = 6
         separator = separator_frame(frame, "Email preferences")
         separator.grid(
-            row=file_row + 0, column=0, columnspan=3, sticky=tk.EW, padx=PAD, pady=PAD
+            row=file_row + 0,
+            column=0,
+            columnspan=3,
+            sticky=tk.EW,
+            padx=PAD,
+            pady=PAD,
         )
 
         label = ttk.Label(frame, text="Directory to store emails")
@@ -202,7 +163,9 @@ class ConfigFrame:
         entry = ttk.Entry(frame, textvariable=self.data_directory)
         entry.grid(row=file_row + 1, column=1, sticky=tk.EW)
 
-        button = IconButton(frame, txt.OPEN, "open", self._get_data_directory)
+        button = IconButton(
+            frame, txt.OPEN, "open-folder", self._get_data_directory
+        )
         button.grid(row=file_row + 1, column=2, padx=PAD)
 
         label = ttk.Label(frame, text="Email template")
@@ -211,7 +174,9 @@ class ConfigFrame:
         entry = ttk.Entry(frame, textvariable=self.email_template)
         entry.grid(row=file_row + 2, column=1, sticky=tk.EW)
 
-        button = IconButton(frame, txt.OPEN, "open", self._get_email_template)
+        button = IconButton(
+            frame, txt.OPEN, "open-folder", self._get_email_template
+        )
         button.grid(row=file_row + 2, column=2, padx=PAD, pady=PAD)
 
         check_button = tk.Checkbutton(
@@ -228,12 +193,15 @@ class ConfigFrame:
 
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
-        frame.buttons = [
+        frame.buttons = self._frame_buttons(frame)
+        frame.disable()
+        return frame
+
+    def _frame_buttons(self, frame: ButtonFrame) -> list[IconButton]:
+        return [
             frame.icon_button("save", self._save_config, True),
             frame.icon_button("exit", self._dismiss),
         ]
-        frame.enable(False)
-        return frame
 
     def _get_data_directory(self) -> str:
         directory = filedialog.askdirectory(
@@ -270,20 +238,18 @@ class ConfigFrame:
 
         if workbook_file_name:
             self.workbook_path.set(workbook_file_name)
-            self.config.workbook_file_name = workbook_file_name
+            config.workbook_file_name = workbook_file_name
 
     def on_workbook_path_change(self, *args) -> None:
         self.set_file_message()
 
     def set_file_message(self) -> None:
         message = ""
-        email_template = os.path.isfile(self.config.email_template)
+        email_template = os.path.isfile(config.email_template)
         directors_rota = os.path.isfile(self.workbook_path.get())
         config_text = "Click on Menu > Defaults to define."
         if not email_template and not directors_rota:
-            message = (
-                f"{txt.DIRECTORS} rota and email template not valid. {config_text}"
-            )
+            message = f"{txt.DIRECTORS} rota and email template not valid. {config_text}"
         elif not email_template and not directors_rota:
             message = f"Email template not valid. {config_text}"
         elif not email_template and not directors_rota:
@@ -295,23 +261,23 @@ class ConfigFrame:
         """
         Enable or disable form buttons based on changes in configuration.
         """
-        enable = bool(self._config_changes())
+        enable = bool(self._record_changes())
         self.button_frame.enable(enable)
 
     def _save_config(self):
         changes = {
             field: f"(old value={change[0]}, new_value={change[1]})"
-            for field, change in self._config_changes().items()
+            for field, change in self._record_changes().items()
         }
 
         logger.info("Config saved", changes=changes)
 
         for field in FIELDS:
-            self.config.config[field] = getattr(self, field).get()
-        return self.config.save()
+            config.config[field] = getattr(self, field).get()
+        return config.save()
 
-    def _config_changes(self) -> dict:
-        stored = self.config.config
+    def _record_changes(self) -> dict:
+        stored = config.config
         return {
             field: (stored[field], getattr(self, field).get())
             for field in FIELDS
