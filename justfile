@@ -1,8 +1,4 @@
-list:
-    just --list
+package_name := `basename $(pwd)`
+script := "uv run src/" + package_name + "/main.py"
 
-run:
-    uv run src/directors_reimbursements/main.py
-
-test:
-    uv run -m pytest
+import '/home/jeff/.config/just/dev-packages.just'

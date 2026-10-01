@@ -1,7 +1,8 @@
 """Utilities for Phoenix Director's payments."""
 
-from typing import NamedTuple
 from datetime import datetime
+from typing import NamedTuple
+
 from dateutil import relativedelta
 
 from directors_reimbursements.config import config
@@ -11,6 +12,7 @@ DateDelta = relativedelta.relativedelta
 
 class Dates(NamedTuple):
     """Period dates as an object."""
+
     start_date: datetime.date
     end_date: datetime.date
     payment_date: datetime.date
@@ -18,7 +20,6 @@ class Dates(NamedTuple):
 
 def get_period_dates(today: datetime.date) -> Dates:
     """Return period dates as a Dates object."""
-    # pylint: disable=no-member)
     payment_month = today.month
     period = config.period_months
     while (payment_month - config.period_start_month) % period != 0:

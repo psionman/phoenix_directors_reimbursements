@@ -1,5 +1,15 @@
 """Initialise the application."""
-from psiutils.utilities import psi_logger
-from directors_reimbursements.constants import APP_NAME
 
-logger = psi_logger(APP_NAME)
+from importlib.metadata import metadata, version
+
+from psiutils.utilities import psi_logger
+
+# must be package name i.e. directory under /src/
+__app_name__ = "directors_reimbursements"
+
+logger = psi_logger(__app_name__)
+
+meta = metadata(__app_name__)
+__summary__: str = meta["Summary"]
+__author__: str = meta["Author"]
+__version__: str = version(__app_name__)

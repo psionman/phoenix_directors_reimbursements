@@ -1,31 +1,19 @@
+# module_caller.py
+"""Module caller for directors_reimbursements."""
+
+from psiutils.module_caller import ModuleCaller as ModuleCallerBase
+
 from directors_reimbursements.forms.frm_config import ConfigFrame
 
 
-class ModuleCaller():
-    """Call a module  from command line."""
-    def __init__(self, root, module) -> None:
-        modules = {
-            'config': self._config,
-            }
-
-        self.invalid = False
-        if module == '-h':
-            for key in sorted(list(modules.keys())+['main']):
-                print(key)
-            self.invalid = True
-            return
-
-        if module not in modules:
-            if module != 'main':
-                print(f'Invalid function name: {module}')
-            self.invalid = True
-            return
-
-        self.root = root.root
-        modules[module]()
-        self.root.destroy()
-        return
+class ModuleCaller(ModuleCallerBase):
+    def __init__(self, root, parsed_args: dict) -> None:
+        self.modules = {
+            "config": (self._config, None),
+        }
+        super().__init__(root, parsed_args)
 
     def _config(self) -> None:
+        print("Calling... config")
         dlg = ConfigFrame(self)
         self.root.wait_window(dlg.root)

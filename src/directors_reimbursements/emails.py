@@ -1,22 +1,21 @@
 """Send and or save emails."""
 
-from pathlib import Path
-from datetime import datetime
-from email.mime.text import MIMEText
-from smtplib import SMTPAuthenticationError
 import smtplib
+from datetime import datetime, timezone
+from email.mime.text import MIMEText
+from pathlib import Path
+from smtplib import SMTPAuthenticationError
 
 from psiutils.errors import ErrorMsg
-from directors_reimbursements.constants import USER_DATA_DIR, DATE_FORMAT
-from directors_reimbursements.process import Director
-from directors_reimbursements.config import read_config, env
+
 from directors_reimbursements import logger
+from directors_reimbursements.config import env, read_config
+from directors_reimbursements.constants import DATE_FORMAT, USER_DATA_DIR
+from directors_reimbursements.process import Director
 
 
-def send_emails(start_date: datetime,
-                directors: dict[Director]) -> int | ErrorMsg:
+def send_emails(start_date: datetime, directors: dict[Director]) -> int | ErrorMsg:
     """Send Emails for the directors."""
-    # pylint: disable=no-member)
     config = read_config()
     template = _email_template(config.email_template)
     if isinstance(template, ErrorMsg):
@@ -26,7 +25,8 @@ def send_emails(start_date: datetime,
     for key, director in directors.items():
         if key and director.dollars > 0:
             response = _create_email(
-                template, director, start_date, config.email_subject)
+                template, director, start_date, config.email_subject
+            )
             if isinstance(response, ErrorMsg):
                 return response
             emails_sent += 1
@@ -38,117 +38,110 @@ def _email_template(email_template_path: str) -> str | ErrorMsg:
     template = _get_email_template(email_template)
     if not template:
         return ErrorMsg(
-            header='File error',
-            message=f'Email template not found at: {email_template}.',
+            header="File error",
+            message=f"Email template not found at: {email_template}.",
         )
     return template
 
 
 def _get_email_template(email_template: Path) -> str:
     try:
-        with open(email_template, 'r', encoding='utf-8') as f_email_text:
+        with open(email_template, "r", encoding="utf-8") as f_email_text:
             return f_email_text.read()
     except (FileNotFoundError, NotADirectoryError):
         logger.error(f"Email template not found at {email_template}")
-        return ''
+        return ""
 
 
 def _create_email(
-        base_content: str,
-        director: Director,
-        start_date: datetime,
-        email_subject: str,
-        ) -> str:
+    base_content: str,
+    director: Director,
+    start_date: datetime,
+    email_subject: str,
+) -> str:
     body = _email_body(base_content, director, start_date)
     try:
         _send_email(
             email_subject,
             body,
-            director.email,)
+            director.email,
+        )
     except SMTPAuthenticationError:
-        logger.error('Email authentication error.')
+        logger.error("Email authentication error.")
         return ErrorMsg(
-            header='Email error',
-            message='Email authentication error.',
+            header="Email error",
+            message="Email authentication error.",
         )
     except TypeError:
-        logger.error('Email setup error.')
+        logger.error("Email setup error.")
         return ErrorMsg(
-            header='Email error',
-            message='Email setup error.',
+            header="Email error",
+            message="Email setup error.",
         )
     return True
 
 
-def _email_body(base_content: str, director: Director,
-                start_date: datetime) -> str:
+def _email_body(base_content: str, director: Director, start_date: datetime) -> str:
     content = base_content
-    content = content.replace('<first name>', director.first_name)
-    content = content.replace('<dollars>', str(director.dollars))
-    content = content.replace(
-        '<period>', start_date.strftime(DATE_FORMAT))
-    return content.replace('<dates>', ', '.join(director.dates))
+    content = content.replace("<first name>", director.first_name)
+    content = content.replace("<dollars>", str(director.dollars))
+    content = content.replace("<period>", start_date.strftime(DATE_FORMAT))
+    return content.replace("<dates>", ", ".join(director.dates))
 
 
 def _send_email(subject, body, recipient):
     msg = MIMEText(body)
-    msg['Subject'] = subject
-    msg['From'] = env['email_sender']
-    msg['To'] = recipient
-    # recipient = env['email_sender']
-    with smtplib.SMTP_SSL(env['smtp_server'], env['smtp_port']) as smtp_server:
-        smtp_server.login(env['email_sender'], env['email_key'])
-        smtp_server.sendmail(env['email_sender'], recipient, msg.as_string())
+    msg["Subject"] = subject
+    msg["From"] = env["email_sender"]
+    msg["To"] = recipient
+    # recipient = env["email_sender"]
+    with smtplib.SMTP_SSL(env["smtp_server"], env["smtp_port"]) as smtp_server:
+        smtp_server.login(env["email_sender"], env["email_key"])
+        smtp_server.sendmail(env["email_sender"], recipient, msg.as_string())
     logger.info(f"Email sent to {recipient}")
 
 
-def emails_to_file(
-        start_date: datetime, directors: dict[Director]) -> int | ErrorMsg:
+def emails_to_file(start_date: datetime, directors: dict[Director]) -> int | ErrorMsg:
     """Send Emails for the directors to file."""
-    # pylint: disable=no-member)
     config = read_config()
     template = _email_template(config.email_template)
     if isinstance(template, ErrorMsg):
         return template
 
-    output = ''.join(
+    output = "".join(
         _email_as_text(template, director, start_date, config.email_subject)
         for key, director in directors.items()
         if key and director.dollars > 0
     )
-    date_str = datetime.now().strftime("%Y%m%d")
+    date_str = datetime.now(tz=timezone.utc).strftime("%Y%m%d")
     email_file = Path(
-        USER_DATA_DIR,
-        'emails',
-        f'{config.email_file_prefix}_{date_str}.txt')
+        USER_DATA_DIR, "emails", f"{config.email_file_prefix}_{date_str}.txt"
+    )
     response = _save_emails(email_file, output)
     if not response:
         return ErrorMsg(
-            header='File error',
-            message=f'Emails not saved: {email_file}.',
+            header="File error",
+            message=f"Emails not saved: {email_file}.",
         )
     return True
 
 
 def _email_as_text(
-        base_content: str,
-        director: Director,
-        start_date: datetime,
-        email_subject: str,
-        ) -> str:
+    base_content: str,
+    director: Director,
+    start_date: datetime,
+    email_subject: str,
+) -> str:
     body = _email_body(base_content, director, start_date)
-    return (f'{director.email}\n'
-            f'{email_subject}\n\n'
-            f'{body}\n'
-            f'{"-"*50}\n\n')
+    return f"{director.email}\n{email_subject}\n\n{body}\n{'-' * 50}\n\n"
 
 
 def _save_emails(email_file: Path, output: str) -> None:
     try:
         email_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(email_file, 'w', encoding='utf-8') as f_email:
+        with open(email_file, "w", encoding="utf-8") as f_email:
             f_email.write(output)
     except NotADirectoryError:
-        logger.warning(f'Cannot find directory: {Path(email_file).parent}')
+        logger.warning(f"Cannot find directory: {Path(email_file).parent}")
         return False
     return True

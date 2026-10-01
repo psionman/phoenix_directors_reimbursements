@@ -1,34 +1,36 @@
 """Tkinter frame for displaying reimbursement report."""
 
 import tkinter as tk
-from tkinter import ttk, messagebox
-from clipboard import copy
+from tkinter import messagebox, ttk
 
+from clipboard import copy
+from psiutils.buttons import ButtonFrame, IconButton
 from psiutils.constants import PAD
 from psiutils.errors import ErrorMsg
-from psiutils.buttons import ButtonFrame, IconButton
+from psiutils.utilities import window_resize
 from psiutils.widgets import WaitCursor
-from psiutils.utilities import window_resize, geometry
 
-from directors_reimbursements.emails import send_emails, emails_to_file
+from directors_reimbursements import logger
 from directors_reimbursements.common import Dates
 from directors_reimbursements.config import read_config
-from directors_reimbursements.text import Text
-from directors_reimbursements import logger
-
+from directors_reimbursements.emails import emails_to_file, send_emails
 from directors_reimbursements.forms.frm_output import OutputFrame
+from directors_reimbursements.state import state
+from directors_reimbursements.text import Text
 
 txt = Text()
 
 
-class ReportFrame():
-    def __init__(self, parent: tk.Frame,
-                 directors: dict,
-                 formatted_report: list,
-                 csv_report: list,
-                 dates: Dates,
-                 output: list) -> None:
-        # pylint: disable=no-member)
+class ReportFrame:
+    def __init__(
+        self,
+        parent: tk.Frame,
+        directors: dict,
+        formatted_report: list,
+        csv_report: list,
+        dates: Dates,
+        output: list,
+    ) -> None:
         self.root = tk.Toplevel(parent.root)
         self.parent = parent
         self.formatted_report = formatted_report
@@ -42,22 +44,25 @@ class ReportFrame():
         self.send_emails = tk.BooleanVar(value=self.config.send_emails)
         self.emails_to_file = tk.BooleanVar(value=self.config.emails_to_file)
 
-        self.send_emails.trace_add('write', self._check_button_enable)
-        self.emails_to_file.trace_add('write', self._check_button_enable)
+        self.send_emails.trace_add("write", self._check_button_enable)
+        self.emails_to_file.trace_add("write", self._check_button_enable)
 
         self._show()
         self._enable_buttons()
 
     def _show(self) -> None:
         root = self.root
-        root.geometry(geometry(self.config, __file__))
-        root.title(f'{txt.TITLE} -  Report')
+        root.geometry(state.get_geometry(__file__))
+        root.title(f"{txt.TITLE} -  Report")
 
-        root.bind('<Control-x>', self._dismiss)
-        root.bind('<Control-c>', self._copy)
-        root.bind('<Control-e>', self._emails)
-        root.bind('<Configure>',
-                  lambda event, arg=None: window_resize(self, __file__))
+        root.bind("<Control-x>", self._dismiss)
+        root.bind("<Control-c>", self._copy)
+        root.bind("<Control-e>", self._emails)
+
+        root.bind(
+            "<Configure>",
+            lambda e: window_resize(root, __file__, state),
+        )
 
         root.rowconfigure(0, weight=1)
         root.columnconfigure(0, weight=1)
@@ -69,8 +74,9 @@ class ReportFrame():
         options_frame.grid(row=1, column=0, sticky=tk.W, padx=PAD, pady=PAD)
 
         self.button_frame = self._button_frame(root)
-        self.button_frame.grid(row=8, column=0, columnspan=9,
-                               sticky=tk.EW, padx=PAD, pady=PAD)
+        self.button_frame.grid(
+            row=8, column=0, columnspan=9, sticky=tk.EW, padx=PAD, pady=PAD
+        )
 
         sizegrip = ttk.Sizegrip(root)
         sizegrip.grid(sticky=tk.SE)
@@ -81,7 +87,7 @@ class ReportFrame():
         frame.columnconfigure(0, weight=1)
 
         text_box = tk.Text(frame)
-        text_box.insert('1.0', '\n'.join(self.formatted_report))
+        text_box.insert("1.0", "\n".join(self.formatted_report))
         text_box.grid(row=0, column=0, sticky=tk.NSEW)
 
         return frame
@@ -90,52 +96,53 @@ class ReportFrame():
         frame = ttk.Frame(master)
         frame.rowconfigure(0, weight=1)
 
-        check_button = tk.Checkbutton(frame, text='Send emails',
-                                      variable=self.send_emails)
+        check_button = tk.Checkbutton(
+            frame, text="Send emails", variable=self.send_emails
+        )
         check_button.grid(row=0, column=0)
 
-        check_button = tk.Checkbutton(frame, text='Save emails in file',
-                                      variable=self.emails_to_file)
+        check_button = tk.Checkbutton(
+            frame, text="Save emails in file", variable=self.emails_to_file
+        )
         check_button.grid(row=0, column=1)
 
         return frame
 
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
-        output_button = IconButton(frame, txt.OUTPUT, 'report', self._output)
+        output_button = IconButton(frame, txt.OUTPUT, "report", self._output)
         frame.buttons = [
-            frame.icon_button('send', self._emails),
-            frame.icon_button('copy_clipboard', self._copy),
+            frame.icon_button("send", self._emails),
+            frame.icon_button("copy_clipboard", self._copy),
             output_button,
-            frame.icon_button('exit', self._dismiss),
+            frame.icon_button("exit", self._dismiss),
         ]
         frame.enable(False)
         return frame
 
     def _emails(self, *args) -> None:
         with WaitCursor(self.root):
-
             if self.emails_to_file.get():
-                response = emails_to_file(
-                    self.parent.start_date, self.directors)
+                response = emails_to_file(self.parent.start_date, self.directors)
                 if isinstance(response, ErrorMsg):
                     response.show_message(self.root)
-                    self.root.config(cursor='')
+                    self.root.config(cursor="")
                     return
 
             if self.send_emails.get():
                 response = send_emails(self.dates.start_date, self.directors)
                 if isinstance(response, ErrorMsg):
                     response.show_message(self.root)
-                    self.root.config(cursor='')
+                    self.root.config(cursor="")
                     return
-                messagebox .showinfo(
-                    'Emails', f'{response} emails sent.', parent=self.root)
-            self.root.config(cursor='')
+                messagebox.showinfo(
+                    "Emails", f"{response} emails sent.", parent=self.root
+                )
+            self.root.config(cursor="")
 
     def _copy(self, *args) -> None:
         logger.info("Copied csv report to clipboard")
-        copy('\n'.join(self.csv_report))
+        copy("\n".join(self.csv_report))
 
     def _check_button_enable(self) -> None:
         self._enable_buttons()

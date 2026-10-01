@@ -2,7 +2,9 @@
 name = "directors-reimbursements"
 version = "0.0.1"
 description = "Create director's reimbursements for Phoenix Bridge Club"
-authors = [{name = "Jeff", "email" = "<jeffwatkins2000@gmail.com>"}]
+authors = [
+    {name = "Jeff Watkins", email = "jeffwatkins2000@gmail.com"}
+]
 readme = "README.md"
 requires-python = '>=3.10'
 
@@ -13,34 +15,12 @@ include = [
     ]
 
 dependencies = [
-    "appdirs>=1.4.4",
-    "asttokens>=3.0.0",
     "clipboard>=0.0.4",
-    "colorama>=0.4.6",
-    "et-xmlfile>=2.0.0",
-    "executing>=2.2.0",
-    "icecream>=2.1.5",
-    "iniconfig>=2.3.0",
-    "markdown>=3.9",
+    "dotenv>=0.9.9",
     "openpyxl>=3.1.5",
-    "packaging>=25.0",
-    "pillow>=12.0.0",
-    "pluggy>=1.6.0",
-    "psi-toml>=0.0.21",
-    "psiutils>=0.2.13",
-    "pygments>=2.19.2",
-    "pyperclip>=1.9.0",
+    "platformdirs>=4.12.2",
+    "psiutils>=2.0.3",
     "python-dateutil>=2.9.0.post0",
-    "python-dotenv>=1.1.1",
-    "six>=1.17.0",
-    "structlog>=25.4.0",
-    "tkinterweb>=4.7.0",
-    "tkinterweb-tkhtml>=2.0.0",
-    "pygobject>=3.54.2",
-    "psiconfig>=0.0.16",
-    "pycairo>=1.28.0",
-    "tomli>=2.3.0",
-    "tomli-w>=1.2.0",
 ]
 
 [dependency-groups]
@@ -49,3 +29,14 @@ dev = ['pytest']
 [build-system]
 requires = ['uv-build']
 build-backend = 'uv_build'
+
+
+[tool.ruff]
+line-length = 79
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "B", "UP"]
+
+[tool.uv.sources]
+psiutils = { path = "../../psi-utilities/psiutils", editable = true }
