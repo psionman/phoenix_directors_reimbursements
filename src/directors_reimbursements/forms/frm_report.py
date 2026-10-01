@@ -4,13 +4,13 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 
 from clipboard import copy
-from psiutils.buttons import ButtonFrame, IconButton
 from psiutils.constants import PAD
 from psiutils.errors import ErrorMsg
 from psiutils.utilities import window_resize
 from psiutils.widgets import WaitCursor
 
 from directors_reimbursements import logger
+from directors_reimbursements.buttons import ButtonFrame, IconButton
 from directors_reimbursements.common import Dates
 from directors_reimbursements.config import read_config
 from directors_reimbursements.emails import emails_to_file, send_emails
@@ -110,20 +110,25 @@ class ReportFrame:
 
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
-        output_button = IconButton(frame, txt.OUTPUT, "report", self._output)
-        frame.buttons = [
-            frame.icon_button("send", self._emails),
-            frame.icon_button("copy_clipboard", self._copy),
-            output_button,
+        # frame.buttons =
+        frame.buttons = self._frame_buttons(frame)
+        frame.disable()
+        return frame
+
+    def _frame_buttons(self, frame: ButtonFrame) -> list[IconButton]:
+        return [
+            frame.icon_button("email-send", self._emails),
+            frame.icon_button("copy-clipboard", self._copy),
+            frame.icon_button("new-note", self._output, text="Report"),
             frame.icon_button("exit", self._dismiss),
         ]
-        frame.enable(False)
-        return frame
 
     def _emails(self, *args) -> None:
         with WaitCursor(self.root):
             if self.emails_to_file.get():
-                response = emails_to_file(self.parent.start_date, self.directors)
+                response = emails_to_file(
+                    self.parent.start_date, self.directors
+                )
                 if isinstance(response, ErrorMsg):
                     response.show_message(self.root)
                     self.root.config(cursor="")

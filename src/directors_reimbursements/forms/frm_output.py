@@ -4,12 +4,11 @@ import tkinter as tk
 from tkinter import ttk
 
 from clipboard import copy
-from psiutils.buttons import ButtonFrame
 from psiutils.constants import PAD
 from psiutils.utilities import window_resize
 
 from directors_reimbursements import logger
-from directors_reimbursements.config import read_config
+from directors_reimbursements.buttons import ButtonFrame
 from directors_reimbursements.state import state
 from directors_reimbursements.text import Text
 
@@ -20,7 +19,6 @@ class OutputFrame:
     def __init__(self, parent: tk.Frame) -> None:
         self.root = tk.Toplevel(parent.root)
         self.parent = parent
-        self.config = read_config()
         self.output = self._enhance_output(parent.output)
 
         # tk Variables
@@ -70,7 +68,7 @@ class OutputFrame:
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
         frame.buttons = [
-            frame.icon_button("copy_clipboard", self._copy),
+            frame.icon_button("copy-clipboard", self._copy),
             frame.icon_button("exit", self._dismiss),
         ]
         return frame
