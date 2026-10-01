@@ -27,9 +27,9 @@ class ConfigFrame:
         # tk variables
         # Assign tk variables and check for changes
         config.assign_tk_variables(self, FIELDS, self._check_value_changed)
-        self.payment_bbo.set(f"{config.payment_bbo:0.2f}")
 
         self._show()
+        self.payment_bbo.set(f"{config.payment_bbo:0.2f}")
 
     def _show(self) -> None:
         root = self.root

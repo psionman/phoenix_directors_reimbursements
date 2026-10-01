@@ -1,5 +1,8 @@
 # History
 
+## Version 0.0.4 - 1 October 2026
+1. fix bug in frm_config 'ConfigFrame' object has no attribute 'button_frame
+
 ## Version 0.0.3 - 1 October 2026
 1. Introduced Thursdays
 2. removed root.py
